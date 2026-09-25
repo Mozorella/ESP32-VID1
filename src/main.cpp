@@ -71,7 +71,7 @@ void handleRoot() {
   html += "<h2>ESP32 Multi-LED Control Panel</h2>";
 
   // LED 1 Controls
-  html += "<div><h3>LED 1 (GPIO 5)</h3>";
+  html += "<div class='card'><h3>LED 1 (GPIO 5)</h3>";
   html += "<p>Status: <span id='st1' class='status status-off'>OFF</span></p>";
   html += "<button class='btn-on' onclick=\"toggleLED('/led?led_id=1&led_action=on')\">Turn ON</button>";
   html += "<button class='btn-off' onclick=\"toggleLED('/led?led_id=1&led_action=off')\">Turn OFF</button></div>";
