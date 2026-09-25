@@ -34,6 +34,13 @@ void handleRoot() {
   html += ".status { font-weight: bold; padding: 3px 8px; border-radius: 4px; }";
   html += ".status-on { background-color: #d4edda; color: #155724; }";
   html += ".status-off { background-color: #f8d7da; color: #721c24; }";
+  // Toggle CSS
+  html += ".switch { position: relative; display: inline-block; width: 60px; height: 34px; margin: 5px; }";
+  html += ".switch input { opacity: 0; width: 0; height: 0; }";
+  html += ".slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #f00404; transition: .3s; border-radius: 34px; }";
+  html += ".slider:before { position: absolute; content: ''; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .3s; border-radius: 50%; }";
+  html += "input:checked + .slider { background-color: #4CAF50; }";
+  html += "input:checked + .slider:before { transform: translateX(26px); }";
   html += "</style></style>";
   // AJAX script to toggle LEDs and poll status without page reloads
   html += "<script>";
@@ -47,6 +54,10 @@ void handleRoot() {
   html += "  xhttp.open('GET', route, true);";
   html += "  xhttp.send();";
   html += "}";
+  // Toggle flip switch function
+  html += "function toggleSwitch(led_id,) {";
+  html += " toggleLED('/toggle?led_id=' + led_id);";
+  html += "}";
   
   html += "function updateStatus() {";
   html += "  var xhttp = new XMLHttpRequest();";
@@ -55,10 +66,13 @@ void handleRoot() {
   html += "      var data = JSON.parse(this.responseText);";
   html += "      document.getElementById('st1').innerHTML = data.led1 ? 'ON' : 'OFF';";
   html += "      document.getElementById('st1').className = 'status ' + (data.led1 ? 'status-on' : 'status-off');";
+  html += "      document.getElementById('sw1').checked = data.led1;";
   html += "      document.getElementById('st2').innerHTML = data.led2 ? 'ON' : 'OFF';";
   html += "      document.getElementById('st2').className = 'status ' + (data.led2 ? 'status-on' : 'status-off');";
+  html += "      document.getElementById('sw2').checked = data.led2;";
   html += "      document.getElementById('st3').innerHTML = data.led3 ? 'ON' : 'OFF';";
   html += "      document.getElementById('st3').className = 'status ' + (data.led3 ? 'status-on' : 'status-off');";
+  html += "      document.getElementById('sw3').checked = data.led3;";
   html += "    }";
   html += "  };";
   html += "  xhttp.open('GET', '/status', true);";
@@ -73,20 +87,17 @@ void handleRoot() {
   // LED 1 Controls
   html += "<div class='card'><h3>LED 1 (GPIO 5)</h3>";
   html += "<p>Status: <span id='st1' class='status status-off'>OFF</span></p>";
-  html += "<button class='btn-on' onclick=\"toggleLED('/led?led_id=1&led_action=on')\">Turn ON</button>";
-  html += "<button class='btn-off' onclick=\"toggleLED('/led?led_id=1&led_action=off')\">Turn OFF</button></div>";
+  html += "<label class='switch'><input type='checkbox' id='sw1' onchange=\"toggleSwitch(1)\"><span class='slider'></span></label></div>";
 
   // LED 2 Controls
   html += "<div class='card'><h3>LED 2 (GPIO 18)</h3>";
   html += "<p>Status: <span id='st2' class='status status-off'>OFF</span></p>";
-  html += "<button class='btn-on' onclick=\"toggleLED('/led?led_id=2&led_action=on')\">Turn ON</button>";
-  html += "<button class='btn-off' onclick=\"toggleLED('/led?led_id=2&led_action=off')\">Turn OFF</button></div>";
+  html += "<label class='switch'><input type='checkbox' id='sw2' onchange=\"toggleSwitch(2)\"><span class='slider'></span></label></div>";
 
   // LED 3 Controls
   html += "<div class='card'><h3>LED 3 (GPIO 19)</h3>";
   html += "<p>Status: <span id='st3' class='status status-off'>OFF</span></p>";
-  html += "<button class='btn-on' onclick=\"toggleLED('/led?led_id=3&led_action=on')\">Turn ON</button>";
-  html += "<button class='btn-off' onclick=\"toggleLED('/led?led_id=3&led_action=off')\">Turn OFF</button></div>";
+  html += "<label class='switch'><input type='checkbox' id='sw3' onchange=\"toggleSwitch(3)\"><span class='slider'></span></label></div>";
 
   html += "</body></html>";
   server.send(200, "text/html", html);
@@ -163,6 +174,21 @@ void setup() {
 
   });
   
+  // Toggle route for flip switches
+  server.on("/toggle", [](){
+    int led_id = server.arg("led_id").toInt();
+    if (led_id == 1) {
+        dynamicHandlingOfLed(1, !led1State, led1State ? LOW : HIGH);
+    } else if (led_id == 2) {
+        dynamicHandlingOfLed(2, !led2State, led2State ? LOW : HIGH);
+    } else if (led_id == 3) {
+        dynamicHandlingOfLed(3, !led3State, led3State ? LOW : HIGH);
+    } else {
+        server.send(400, "text/plain", "Invalid LED ID");
+        return;
+    }
+  });
+
   server.on("/status", handleStatus);
 
 
