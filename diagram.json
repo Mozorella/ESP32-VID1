@@ -1,30 +1,65 @@
 {
   "version": 1,
-  "author": "Kyla",
+  "author": "ESP32 Multi-LED Control",
   "editor": "wokwi",
   "parts": [
-    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 163.2, "left": 129.64, "attrs": {} },
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
     {
       "type": "wokwi-led",
       "id": "led1",
-      "top": 236.4,
-      "left": 292.2,
-      "attrs": { "color": "red", "flip": "1" }
+      "top": 8.4,
+      "left": 179.4,
+      "rotate": 90,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": 75.6,
+      "left": 179.4,
+      "rotate": 90,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": 142.8,
+      "left": 179.4,
+      "rotate": 90,
+      "attrs": { "color": "blue" }
     },
     {
       "type": "wokwi-resistor",
       "id": "r1",
-      "top": 311.15,
-      "left": 249.6,
+      "top": 32.75,
+      "left": 115.2,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": 99.95,
+      "left": 115.2,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": 167.15,
+      "left": 115.2,
       "attrs": { "value": "220" }
     }
   ],
   "connections": [
-    [ "esp:TX", "$serialMonitor:RX", "", [] ],
-    [ "esp:RX", "$serialMonitor:TX", "", [] ],
-    [ "led1:A", "esp:5", "green", [ "v0" ] ],
-    [ "led1:C", "r1:2", "green", [ "v0" ] ],
-    [ "r1:1", "esp:GND.1", "green", [ "v67.2", "h-124.8", "v-67.2" ] ]
+    [ "esp:GND.1", "led1:C", "black", [ "v67.2", "h100.99", "v-192.4" ] ],
+    [ "esp:GND.1", "led2:C", "black", [ "v76.8", "h110.59", "v-105.6", "v-29.2" ] ],
+    [ "esp:GND.1", "led3:C", "black", [ "v86.4", "h120.19", "v-77.2" ] ],
+    [ "esp:5", "r1:1", "red", [ "h4.84", "v-76.8" ] ],
+    [ "r1:2", "led1:A", "red", [ "h0" ] ],
+    [ "esp:18", "r2:1", "green", [ "h14.44", "v-38.95" ] ],
+    [ "r2:2", "led2:A", "green", [ "h9.6", "v58.8" ] ],
+    [ "esp:19", "r3:1", "blue", [ "h-4.76", "v76.8" ] ],
+    [ "r3:2", "led3:A", "blue", [ "h18" ] ]
   ],
   "dependencies": {}
 }
