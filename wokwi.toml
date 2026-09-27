@@ -5,3 +5,4 @@ elf = '.pio\build\esp32doit-devkit-v1\firmware.elf'
 [[net.forward]]
 from = "localhost:8180"
 to = "target:80"
+# http://localhost:8180/
